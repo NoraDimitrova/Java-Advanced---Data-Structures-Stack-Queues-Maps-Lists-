@@ -1,0 +1,69 @@
+package EXAMS;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class P01Bouquets {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        List<Integer> tulipsList = Arrays.stream(scanner.nextLine().split(", "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        List<Integer> daffodilsList = Arrays.stream(scanner.nextLine().split(", "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        ArrayDeque<Integer> stackTulips = new ArrayDeque<>();
+
+        for (Integer integer : tulipsList) {
+            stackTulips.push(integer);
+        }
+        ArrayDeque<Integer> queueDaffodils = new ArrayDeque<>();
+        for (Integer integer : daffodilsList) {
+            queueDaffodils.offer(integer);
+        }
+
+        List<Integer> leftFlowers = new ArrayList<>();
+
+        int countBouquets = 0;
+        while (stackTulips.size() > 0 && queueDaffodils.size() > 0) {
+            int currentTulips = stackTulips.pop();
+            int currentDaffodils = queueDaffodils.poll();
+            int sumOfBoth = currentTulips + currentDaffodils;
+
+            if (sumOfBoth == 15) {
+                countBouquets++;
+                continue;
+            } else if (sumOfBoth < 15) {
+                leftFlowers.add(sumOfBoth);
+            } else if (sumOfBoth > 15) {
+                while (sumOfBoth > 15) {
+                    int newValueTulips = currentTulips - 2;
+                    currentTulips = newValueTulips;
+                    sumOfBoth = newValueTulips + currentDaffodils;
+                    if (sumOfBoth == 15) {
+                        countBouquets++;
+                    } else if (sumOfBoth < 15) {
+                        leftFlowers.add(sumOfBoth);
+                    }
+                }
+            }
+        }
+        int sum = 0;
+        int number = leftFlowers.size();
+        while (number > 0) {
+            for (Integer leftFlower : leftFlowers) {
+                sum += leftFlower;
+                number--;
+
+            }
+        }
+        int otherCountBouquets = sum / 15;
+
+        if (countBouquets + otherCountBouquets >= 5) {
+            System.out.printf("You made it! You go to the competition with %d bouquets!%n", countBouquets + otherCountBouquets);
+        } else {
+            System.out.printf("You failed... You need more %d bouquets.", 5 - countBouquets - otherCountBouquets);
+        }
+    }
+}
