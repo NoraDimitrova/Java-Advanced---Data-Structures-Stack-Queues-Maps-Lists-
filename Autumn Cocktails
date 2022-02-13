@@ -1,0 +1,102 @@
+package EXAMS;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class P1AutumnCocktails {
+    private static final int coctailPearSour = 150;
+    private static final int coctailTheHarvest = 250;
+    private static final int coctailAppleHinny = 300;
+    private static final int coctailHighFashion = 400;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+
+        List<Integer> bucketOfIngredients = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        ArrayDeque<Integer> queueBucket = new ArrayDeque<>();
+
+        for (Integer bucketOfIngredient : bucketOfIngredients) {
+            queueBucket.offer(bucketOfIngredient);
+        }
+
+        List<Integer> freshness = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        ArrayDeque<Integer> stackFreshness = new ArrayDeque<>();
+
+        for (Integer integer : freshness) {
+            stackFreshness.push(integer);
+        }
+
+        int counter1 = 0;
+        int counter2 = 0;
+        int counter3 = 0;
+        int counter4 = 0;
+
+        Map<String, Integer> cocktailsMap = new TreeMap<>();
+
+        while (queueBucket.size() > 0 && stackFreshness.size() > 0) {
+
+            int currentBucket = queueBucket.peek();
+
+            if (currentBucket == 0) {
+                queueBucket.poll();
+                continue;
+            }
+
+            int currentFreshness = stackFreshness.pop();
+
+            int multiplication = currentBucket * currentFreshness;
+
+
+            if (multiplication == coctailPearSour) {
+                counter1++;
+                queueBucket.poll();
+                cocktailsMap.put("Pear Sour", counter1);
+            } else if (multiplication == coctailTheHarvest) {
+                counter2++;
+                queueBucket.poll();
+                cocktailsMap.put("The Harvest", counter2);
+            } else if (multiplication == coctailAppleHinny) {
+                counter3++;
+                queueBucket.poll();
+                cocktailsMap.put("Apple Hinny", counter3);
+            } else if (multiplication == coctailHighFashion) {
+                counter4++;
+                queueBucket.poll();
+                cocktailsMap.put("High Fashion", counter4);
+            } else {
+                currentBucket = currentBucket + 5;
+                queueBucket.poll();
+                queueBucket.offer(currentBucket);
+            }
+        }
+
+        if (counter1 >= 1 && counter2 >= 1 && counter3 >= 1 && counter4 >= 1) {
+            System.out.println("It's party time! The cocktails are ready!");
+        } else {
+            System.out.println("What a pity! You didn't manage to prepare all cocktails.");
+        }
+
+        int sum = 0;
+        if (!queueBucket.isEmpty()) {
+            while (!queueBucket.isEmpty()) {
+                int currentEl = queueBucket.poll();
+                sum += currentEl;
+            }
+            System.out.println("Ingredients left: " + sum);
+        }
+// sort Map in alphabetical order:
+
+        for (Map.Entry<String, Integer> entryCoctail : cocktailsMap.entrySet()) {
+            for (Map.Entry<String, Integer> entryKey : cocktailsMap.entrySet()) {
+                if (entryCoctail.getKey().equals(entryKey.getKey())) {
+                    System.out.printf(" # %s --> %s%n", entryCoctail.getKey(), entryKey.getValue());
+                }
+            }
+        }
+    }
+}
