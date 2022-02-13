@@ -1,0 +1,70 @@
+package EXAMS;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class P01Meeting {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        List<Integer> listMales = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        List<Integer> listFemales = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        ArrayDeque<Integer> stackMales = new ArrayDeque<>();
+
+        for (Integer listM : listMales) {
+            stackMales.push(listM);
+        }
+
+        ArrayDeque<Integer> queueFemales = new ArrayDeque<>();
+
+        for (Integer listF : listFemales) {
+            queueFemales.offer(listF);
+        }
+//3 6 9 12
+//12 9 6 1 25 25
+
+        int counterAllMatches = 0;
+
+        while (stackMales.size() > 0 && queueFemales.size() > 0) {
+            int firstMale = stackMales.peek();
+            int firstFemale = queueFemales.peek();
+            if (firstMale <= 0) {
+                stackMales.pop();
+            } else if (firstFemale <= 0) {
+                queueFemales.poll();
+            } else if (firstMale % 25 == 0) {
+                stackMales.pop();
+                stackMales.pop();
+            } else if (firstFemale % 25 == 0) {
+                queueFemales.poll();
+                queueFemales.poll();
+            } else if (firstMale == firstFemale) {
+                stackMales.pop();
+                queueFemales.poll();
+                counterAllMatches++;
+            } else {
+                queueFemales.poll();
+                stackMales.pop();
+                stackMales.push(firstMale - 2);
+            }
+        }
+        System.out.println("Matches: " + counterAllMatches);
+
+        if (stackMales.isEmpty()) {
+            System.out.println("Males left: none");
+        } else {
+
+            System.out.println("Males left: " + stackMales.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        }
+        if (queueFemales.isEmpty()) {
+            System.out.println("Females left: none");
+        } else {
+            System.out.println("Females left: " + queueFemales.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        }
+
+    }
+}
