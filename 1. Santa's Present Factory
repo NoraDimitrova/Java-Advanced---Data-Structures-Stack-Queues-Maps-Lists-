@@ -1,0 +1,127 @@
+package EXAMS;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class P1SantasPresentFactory {
+
+    private static final int doll = 150;
+    private static final int woodenTrain = 250;
+    private static final int teddyBear = 300;
+    private static final int bicycle = 400;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        List<Integer> materialsList = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        List<Integer> magicValuesList = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        ArrayDeque<Integer> stackMaterials = new ArrayDeque<>();
+
+        for (Integer integer : materialsList) {
+            stackMaterials.push(integer);
+        }
+
+        ArrayDeque<Integer> queueMagicValues = new ArrayDeque<>();
+
+        for (Integer integer : magicValuesList) {
+            queueMagicValues.offer(integer);
+        }
+        int counterDolls = 0;
+        int counterWoodenTrain = 0;
+        int counterTeddyBear = 0;
+        int counterBicycle = 0;
+
+        Map<String, Integer> countPresents = new TreeMap<>();
+
+        while (!stackMaterials.isEmpty() && !queueMagicValues.isEmpty()) {
+            int currentMaterials = stackMaterials.peek();
+            int currentMagicValues = queueMagicValues.peek();
+
+            if (currentMaterials == 0 && currentMagicValues == 0) {
+                stackMaterials.pop();
+                queueMagicValues.poll();
+                continue;
+            } else if (currentMaterials == 0) {
+                stackMaterials.pop();
+                continue;
+            } else if (currentMagicValues == 0) {
+                queueMagicValues.poll();
+                continue;
+            }
+
+            int totalMagicLevel = currentMaterials * currentMagicValues;
+
+            if (totalMagicLevel < 0) {
+                int sum = currentMaterials + currentMagicValues;
+                stackMaterials.pop();
+                queueMagicValues.poll();
+                stackMaterials.push(sum);
+                continue;
+            }
+
+
+            if (totalMagicLevel == doll) {
+                counterDolls++;
+                stackMaterials.pop();
+                queueMagicValues.poll();
+                countPresents.put("Doll", counterDolls);
+
+            } else if (totalMagicLevel == woodenTrain) {
+                counterWoodenTrain++;
+                stackMaterials.pop();
+                queueMagicValues.poll();
+                countPresents.put("Wooden train", counterWoodenTrain);
+
+            } else if (totalMagicLevel == teddyBear) {
+                counterTeddyBear++;
+                stackMaterials.pop();
+                queueMagicValues.poll();
+                countPresents.put("Teddy bear", counterTeddyBear);
+
+            } else if (totalMagicLevel == bicycle) {
+                counterBicycle++;
+                stackMaterials.pop();
+                queueMagicValues.poll();
+                countPresents.put("Bicycle", counterBicycle);
+
+            } else {
+                int increasedMaterials = currentMaterials + 15;
+                stackMaterials.pop();
+                queueMagicValues.poll();
+                stackMaterials.push(increasedMaterials);
+            }
+        }
+
+        // output
+
+        if (counterDolls > 0 && counterWoodenTrain > 0) {
+            System.out.println("The presents are crafted! Merry Christmas!");
+        } else if (counterTeddyBear > 0 && counterBicycle > 0) {
+            System.out.println("The presents are crafted! Merry Christmas!");
+        } else {
+            System.out.println("No presents this Christmas!");
+        }
+
+        if (stackMaterials.size() > 0) {
+            System.out.println("Materials left: " + stackMaterials.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        }
+
+        if (queueMagicValues.size() > 0) {
+            System.out.println("Magic left: " + queueMagicValues.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        }
+
+        // sort Map in alphabetical order:
+
+        for (Map.Entry<String, Integer> entryPresent : countPresents.entrySet()) {
+            for (Map.Entry<String, Integer> entryKey : countPresents.entrySet()) {
+                if (entryPresent.getKey().equals(entryKey.getKey())) {
+                    System.out.printf("%s: %s%n", entryPresent.getKey(), entryKey.getValue());
+                }
+            }
+        }
+    }
+}
