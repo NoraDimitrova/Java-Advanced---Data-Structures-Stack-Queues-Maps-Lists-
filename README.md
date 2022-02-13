@@ -1,2 +1,2 @@
-# Java Advanced-Data-Structures-Stack-Queues-Maps-Lists-
-exam tasks
+# Java Advanced-Data Structures/Stack, Queues, Maps, Lists/
+EXAM TASKS
