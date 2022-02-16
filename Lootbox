@@ -1,0 +1,66 @@
+package EXAMS;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class P1Lootbox {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        List<Integer> firstLootBox = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        ArrayDeque<Integer> queueFirstBox = new ArrayDeque<>();
+
+        for (Integer box : firstLootBox) {
+            queueFirstBox.offer(box);
+        }
+
+        List<Integer> secondLootBox = Arrays.stream(scanner.nextLine().split(" "))
+                .map(Integer::parseInt).collect(Collectors.toList());
+
+        ArrayDeque<Integer> stackSecondBox = new ArrayDeque<>();
+
+        for (Integer lootBox : secondLootBox) {
+            stackSecondBox.push(lootBox);
+        }
+
+        List<Integer> claimedItems = new ArrayList<>();
+
+        while (!queueFirstBox.isEmpty() && !stackSecondBox.isEmpty()) {
+
+            int currentElementFirstBox = queueFirstBox.peek();
+            int currentElementSecondBox = stackSecondBox.peek();
+
+            int sum = currentElementFirstBox + currentElementSecondBox;
+
+            if (sum % 2 == 0) {
+                claimedItems.add(sum);
+                queueFirstBox.poll();
+                stackSecondBox.pop();
+            } else {
+                stackSecondBox.pop();
+                queueFirstBox.offer(currentElementSecondBox);
+            }
+        }
+        if (queueFirstBox.isEmpty()) {
+            System.out.println("First lootbox is empty");
+        } else {
+            System.out.println("Second lootbox is empty");
+        }
+
+        int sum = 0;
+        for (Integer claimedItem : claimedItems) {
+            sum += claimedItem;
+
+        }
+
+        if (sum >= 100) {
+            System.out.printf("Your loot was epic! Value: %d%n", sum);
+
+        } else {
+            System.out.printf("Your loot was poor... Value: %d%n", sum);
+        }
+
+    }
+}
